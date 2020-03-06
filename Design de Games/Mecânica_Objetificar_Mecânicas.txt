@@ -1,0 +1,3 @@
+A mecânica é objetificar a própria mecânica do jogo, tive seu primeiro contato em Baba is You, em que a mecânica de cada coisa é representada por bloquinhos de palavras que formam uma frase, esses blocos sendo moveis, podendo assim modificar a física do objeto.
+Um exemplo de seu funcionamento é os 3 blocos em sequência, “Flag”+”Is”+”Win”, que te permite, ao encostar em uma bandeira, você ganhar a fase. Caso a palavra “Win” não estivesse na frase, tocar na bandeira não faria nada.
+Essa mecânica é útil para gerar puzzles, que além de resolver o próprio desafio do mapa, você ainda tem que pensar na mecânica de cada objeto, não podendo assimilar sempre um objeto à mesma coisa, “Uma parede é sempre um obstáculo, ou, uma bandeira é sempre vitória”

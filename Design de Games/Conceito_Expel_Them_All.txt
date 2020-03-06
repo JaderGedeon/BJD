@@ -1,0 +1,3 @@
+Bom dia, o nosso jogo é o Expel them all, que conta a história de Jurema, uma índia Tupi da época do descobrimento do Brasil, que tem como objetivo expulsar os colonizadores de um modo pacífico: Envergonhando-os. Nosso jogo mostra também os valores culturais das tribos Tupi e dos colonizadores da época.
+
+É um jogo side-scroller 2D com gráficos pixelizados e controle de Atari, o jogador controla a indiazinha Jurema, e deve guiar ela por uma floresta, evitando ser detectado pelos invasores, enquanto interage com objetos, criando situações que fazem esses colonizadores passarem vergonha, possibilitando a indiazinha a continuar em frente para passar de fase.
