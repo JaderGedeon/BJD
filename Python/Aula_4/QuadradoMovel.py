@@ -41,4 +41,8 @@ while JogoAtivo:
                 Bloco = pygame.draw.rect(screen,LARANJA,CordsBloco)
                 print("Foi")
     pygame.display.flip()
+    
+# Para fazer com que o quadrado colida com a tela basta verificar a posição dele em relação à tela.
+
+# Para fazer com que o quadrado ande com a tecla pressionada basta adicionar um boolean para verificar se a tecla foi pressionada e ainda não foi solta.
 
