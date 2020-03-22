@@ -2,7 +2,7 @@
 # Disciplina: PI 2: Plataforma
 # Título: Copiar Arquivo
 # Autor: Jader G. O. Rocha
-# Data: 12/03/20
+# Data: 22/03/20
 ######################################
 
 arquivoEscrito = "CopiarArquivos_Arquivos/Escrito.txt"
