@@ -21,71 +21,43 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         game();
-        /*
-        Game: Tudo
-        Initialize: Escolher diferentes arquivos
-        Print: Tudo
-        Step: Tudo
-        Status: Tudo       
-        */
-
-        /* CÓDIGO PRA EXIBIR COMO ESTÁ O TABULEIRO
-        String linha = "";
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                linha += " "+tabuleiro[i][j];
-            }
-            linha += "\n";
-        }
-        System.out.println(linha);
-        
-        */
 
     }
-    /*
-   função que irá executar a lógica deste jogo e chamar todos as funções 
-   descritas a seguir dentro de um gameloop. 
-   */
+
     public static void game() throws IOException {
 
-        Scanner ler = new Scanner(System.in);
+        Scanner leitor = new Scanner(System.in);
 
-        char tabuleiro[][] = initialize();
-        
-        boolean operante = true;
+        char tab_primordial[][] = initialize();
+        char[][] tabuleiro = new char[9][9];
+
+        for (int i = 0; i < tab_primordial.length; i++)
+            for (int j = 0; j < tab_primordial[i].length; j++)
+                tabuleiro[i][j] = tab_primordial[i][j];
+
+        boolean operante = false;
 
         // game loop
-        while (operante) {
+        while (!operante) {
 
-            
-            
-            
-            
-            
-            
-            
+            print(tabuleiro, tab_primordial);
+
+            switch (step(tabuleiro, tab_primordial)) {
+                case -1:
+                    System.out.println("\n\n\n===============[Valores inseridos inválidos, Tente novamente]===============\n");
+                    break;
+                case 0:
+                    System.out.println("\n\n\n==[O número digitado já existe na Linha/Coluna/Quadrante, Tente novamente]==\n");
+                    break;
+                case 1:
+                    System.out.println("\n\n\n==============================[Próxima Jogada]==============================\n");
+                    break;
+            }
+
             operante = status(tabuleiro);
         }
-        
-    }
 
-    /*
-    A função initialize() deverá fazer a leitura da grade armazenada em um arquivo texto e devolver
-    uma matriz 9x9 já com os valores iniciais. Para que o jogo fique desafiador tente criar arquivos com
-    configurações com grau de dificuldade diferentes. Abaixo segue um exemplo de arquivo de entrada as
-    posições estão separadas por espaço em branco e a posição vazia é definida usando o caractere ‘_’ underline.
-    Exemplo de arquivo de entrada:
-    
-    5 3 _ _ 7 _ _ _ _
-    6 _ _ 1 9 5 _ _ _
-    _ 9 8 _ _ _ _ 6 _
-    8 _ _ _ 6 _ _ _ 3
-    4 _ _ 8 _ 3 _ _ 1
-    7 _ _ _ 2 _ _ _ 6
-    _ 6 _ _ _ _ 2 8 _
-    _ _ _ 4 1 9 _ _ 5
-    _ _ _ _ 8 _ _ 7 9
-    */
+    }
 
     public static char[][] initialize() throws FileNotFoundException, IOException {
 
@@ -105,14 +77,133 @@ public class Main {
 
         return grade;
     }
-    
-    /*
-    A função status() verifica se o jogador já solucionou o quebra-cabeça, ou seja, não existe posições
-    vazias na matriz. Caso o jogador tenha cumprido o objetivo do jogo a função retorna true, ou false caso
-    contrário
-    */
-    
-    public static boolean status(char grade[][]){
-        return false;
+
+    public static void print(char grade[][], char primordial[][]) {
+
+        String Azul = "\u001B[34m";
+        String Verde = "\u001B[32m";
+        String Ciano = "\u001B[36m";
+        String Vermelho = "\u001B[31m";
+
+        String Reset = "\u001B[0m";
+
+        String linha = "               C O L U N A" + Reset + "\n";
+
+        linha += "" + Vermelho + "         1│2│3  4│5│6  7│8│9" + Reset + "\n";
+        linha += "       " + Verde + "═════" + Reset + "  " + Ciano + "════" + Reset + "  " + Verde + "═════" + Reset + "\n";
+
+        for (int i = 0; i < 9; i++) {
+            switch (i - 2) {
+                case 1:
+                    linha += "L\nI  ";
+                    break;
+                case 2:
+                    linha += "N  ";
+                    break;
+                case 3:
+                    linha += "H  ";
+                    break;
+                case 4:
+                    linha += "A\n   ";
+                    break;
+                default:
+                    linha += "   ";
+                    break;
+            }
+
+            linha += "" + Vermelho + (i + 1) + Reset + "  ";
+            if (i < 3 || i > 5) {
+                linha += "" + Verde + "║" + Reset;
+            } else {
+                linha += "" + Ciano + "║" + Reset;
+            }
+
+            for (int j = 0; j < 9; j++) {
+                if (j > 0 && j % 3 == 0) {
+                    linha += " ";
+                }
+
+                if (j % 3 == 0) {
+                    linha += " ";
+                } else {
+                    linha += "│";
+                }
+
+                if (grade[i][j] != '_' && grade[i][j] == primordial[i][j]) {
+                    linha += "" + Azul + grade[i][j] + Reset;
+
+
+                } else {
+                    linha += "" + grade[i][j];
+                }
+
+            }
+
+            if (i < 3 || i > 5) {
+                linha += "" + Verde + " ║\n" + Reset;
+            } else {
+                linha += "" + Ciano + " ║\n" + Reset;
+            }
+
+        }
+        linha += "       " + Verde + "═════" + Reset + "  " + Ciano + "════" + Reset + "  " + Verde + "═════" + Reset + "\n";
+        System.out.printf(linha);
+
+    }
+
+    public static int step(char grade[][], char primordial[][]) {
+
+        Scanner leitor = new Scanner(System.in);
+
+        try {
+
+            System.out.println("\nDigite a coordenada linha<espaço>coluna de sua jogada: ");
+            int lin = (leitor.nextInt() - 1);
+            int col = (leitor.nextInt() - 1);
+
+            System.out.println("\nDigite o número que deseja colocar: ");
+            String numJogado = leitor.next();
+
+            if (numJogado.charAt(0) != '_' && (Integer.parseInt(numJogado) > 9 || Integer.parseInt(numJogado) < 1) || primordial[lin][col] != '_') {
+                return -1;
+            }
+
+
+
+            if (numJogado.charAt(0) != '_') {
+                for (int i = 0; i < 9; i++) {
+                    if (grade[lin][i] == numJogado.charAt(0) || grade[i][col] == numJogado.charAt(0)) {
+                        return 0;
+                    }
+                }
+
+                for (int i = (lin / 3) * 3; i < (lin / 3) * 3 + 3; i++) {
+                    for (int j = (col / 3) * 3; j < (col / 3) * 3 + 3; j++) {
+                        if (grade[i][j] == numJogado.charAt(0)) {
+                            return 0;
+                        }
+                    }
+                }
+            }
+
+            grade[lin][col] = numJogado.charAt(0);
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return -1;
+        }
+
+        return 1;
+    }
+
+    public static boolean status(char grade[][]) {
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grade[i][j] == '_')
+                    return false;
+            }
+        }
+        return true;
     }
 }
