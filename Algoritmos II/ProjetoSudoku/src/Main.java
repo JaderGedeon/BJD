@@ -20,15 +20,35 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        
+        
 
-        game();
+        game(0);
 
     }
 
-    public static void game() throws IOException {
+    //Função que irá executar a lógica do jogo.
+    public static void game(int reiniciado) throws IOException {
 
         Scanner leitor = new Scanner(System.in);
+        
+        //Exibir o manual apenas 1 vez no inicio
+        if(reiniciado == 0)
+        //Manual
+            System.out.println("==================================[Sudoku]==================================\n"
+                             + "\n"
+                             + "O objetivo do jogo é a colocação de números de 1 a 9 em cada uma das células vazias\n"
+                             + "numa grade de 9x9, constituída por 3x3 subgrades chamadas regiões.\n"
+                             + "\n"
+                             + "O tabuleiro contém algumas pistas iniciais, que são números inseridos em algumas células,\n"
+                             + "de maneira a permitir uma indução ou dedução dos números em células que estejam vazias.\n"
+                             + "\n"
+                             + "Cada coluna, linha e região só pode ter um número de cada um dos 1 a 9.\n"
+                             + "\n"
+                             + "Para importar novos tabuleiros, entre na pasta 'boards/' e clone o Modelo.txt\n"
+                             + "como base, substituindo os '_' por dígitos no novo arquivo, e também renomeando-o.");
 
+        //Definição do tabuleiro e cópia dele, sendo o primordial a matriz-origem.
         char tab_primordial[][] = initialize();
         char[][] tabuleiro = new char[9][9];
 
@@ -36,18 +56,14 @@ public class Main {
             System.arraycopy(tab_primordial[i], 0, tabuleiro[i], 0, tab_primordial[i].length);
 
         boolean operante = false;
-        
-        //Manual
-        
-        
-        
-        
 
+        
         // game loop
         while (!operante) {
-            
+
             print(tabuleiro, tab_primordial);
 
+            //Cada return do Step notifica um diferente mensagem dependendo do return.
             switch (step(tabuleiro, tab_primordial)) {
                 case -1:
                     System.out.println("\n\n\n===============[Valores inseridos inválidos, Tente novamente]===============\n");
@@ -59,70 +75,78 @@ public class Main {
                     operante = status(tabuleiro);
                     if (!operante)
                         System.out.println("\n\n\n==============================[Próxima Jogada]==============================\n");
+                        
                     break;
             }
 
         }
+        
+        //Fim de jogo
         System.out.println("\n\n\n================================[Parabéns!!]================================\n");
         print(tabuleiro, tab_primordial);
         System.out.println("\n======================[Deseja jogar novamente? (S/N) ]======================\n");
-        
+
         String resp = leitor.next();
-        
+
+        //Reiniciar o jogo
         if ("S".equals(resp) || "s".equals(resp))
-            game();
+            game(1);
 
     }
 
+    //Função que inicializara o tabuleiro do jogo
     public static char[][] initialize() throws FileNotFoundException, IOException {
 
-        Scanner leitor = new Scanner(System.in);
-        
         char grade[][] = new char[9][9];
-        
+
         int tabEscolhido = 0;
         
+        //Coloca dentro de uma lista todos os arquivos.txt dentro da paste boards/.
+
         File diretorio = new File("boards");
-        ArrayList<String> tabuleiros = new ArrayList();
-        
-        for (File arquivos : diretorio.listFiles()) {
-            if(arquivos.getName().endsWith(".txt"))
+        ArrayList < String > tabuleiros = new ArrayList();
+
+        for (File arquivos: diretorio.listFiles()) {
+            if (arquivos.getName().endsWith(".txt") && !"Modelo.txt".equals(arquivos.getName()))
                 tabuleiros.add(arquivos.getName());
         }
-        
+
         boolean valorCorreto = false;
+
         
-        while(!valorCorreto){
-            tabEscolhido = 0;
-            try{
+        //Testa pra ver se o jogador inseriu o numero de um tabuleiro valido.
+        while (!valorCorreto) {
+            try {
+
+                Scanner leitor = new Scanner(System.in);
 
                 System.out.println("\n================================[Tabuleiros]================================\n");
 
                 for (int i = 0; i < tabuleiros.size(); i++) {
-                    System.out.println("("+(i+1)+") > "+tabuleiros.get(i).substring(0,tabuleiros.get(i).length()-4));
+                    System.out.println("(" + (i + 1) + ") > " + tabuleiros.get(i).substring(0, tabuleiros.get(i).length() - 4));
                 }
 
                 System.out.println("\nDigite o número do tabuleiro que deseje jogar: ");
                 tabEscolhido = leitor.nextInt();
-                
-                if(tabEscolhido > 0 && tabEscolhido <= tabuleiros.size())
+
+                if (tabEscolhido > 0 && tabEscolhido <= tabuleiros.size())
                     valorCorreto = true;
 
-            } catch(Exception e) {
+            } catch (Exception e) {
 
             }
-            if(!valorCorreto){
-                System.out.println("\n\n\n===============[Valores inseridos inválidos, Tente novamente]===============\n");
-                tabEscolhido = 0;
-            }
-            
+            if (!valorCorreto)
+                System.out.println("\n===============[Valores inseridos inválidos, Tente novamente]===============");
         }
 
-        FileReader leitorChar = new FileReader("boards/"+tabuleiros.get(tabEscolhido-1)); // Lê caracter por caracter em ascii de uma linha
-        BufferedReader bufferLinha = new BufferedReader(leitorChar); //Bufferiza os caracteres de uma linha, normal, não ascii
+        System.out.println("\n\n");
+        
+        //Faz a leitura do arquivo
+        FileReader leitorChar = new FileReader("boards/" + tabuleiros.get(tabEscolhido - 1));
+        BufferedReader bufferLinha = new BufferedReader(leitorChar);
 
         for (int i = 0; i < 9; i++) {
-            String linhaGrade[] = (bufferLinha.readLine()).split(" "); //Separa a linha bufferizada e armazena numa array
+            String linhaGrade[] = (bufferLinha.readLine()).split(" "); 
             for (int j = 0; j < 9; j++) {
                 grade[i][j] = linhaGrade[j].charAt(0);
             }
@@ -133,8 +157,10 @@ public class Main {
         return grade;
     }
 
+    //Funcao que ira mostrar o tabuleiro na tela a cada jogada
     public static void print(char grade[][], char primordial[][]) {
 
+        //Corezinhas :3
         String Azul = "\u001B[34m";
         String Verde = "\u001B[32m";
         String Ciano = "\u001B[36m";
@@ -142,6 +168,7 @@ public class Main {
 
         String Reset = "\u001B[0m";
 
+        //Tudo a seguir, realiza a montagem de uma string para aparecer o tabuleiro na tela
         String linha = "               C O L U N A" + Reset + "\n";
 
         linha += "" + Vermelho + "         1│2│3  4│5│6  7│8│9" + Reset + "\n";
@@ -194,7 +221,7 @@ public class Main {
 
             }
 
-            if (i < 3 || i > 5) {   
+            if (i < 3 || i > 5) {
                 linha += "" + Verde + " ║\n" + Reset;
             } else {
                 linha += "" + Ciano + " ║\n" + Reset;
@@ -206,28 +233,32 @@ public class Main {
 
     }
 
+    //Funcao que realizara cada jogada
     public static int step(char grade[][], char primordial[][]) {
 
         Scanner leitor = new Scanner(System.in);
-
+        
+        //Testa para ver se o jogador numeros validos
         try {
 
-            System.out.println("\nDigite a coordenada linha<espaço>coluna de sua jogada: ");
+            System.out.println("\nDigite a coordenada linha<espaço>coluna de sua jogada: Ex:'1 1'");
             int lin = (leitor.nextInt() - 1);
             int col = (leitor.nextInt() - 1);
 
             System.out.println("\nDigite o número que deseja colocar: ");
             String numJogado = leitor.next();
 
+            
+            //Teste de numeros validos
             if ((numJogado.charAt(0) != '_' && (Integer.parseInt(numJogado) > 9 || Integer.parseInt(numJogado) < 1)) || primordial[lin][col] != '_')
                 return -1;
-            
-            
-            if(numJogado.charAt(0) != '_' && grade[lin][col] != '_')
+
+
+            if (numJogado.charAt(0) != '_' && grade[lin][col] != '_')
                 return -1;
 
 
-
+            //Teste para ver se não deu erro de Sudoku (Dois numeros na mesma linha/coluna/regiao
             if (numJogado.charAt(0) != '_') {
                 for (int i = 0; i < 9; i++) {
                     if (grade[lin][i] == numJogado.charAt(0) || grade[i][col] == numJogado.charAt(0)) {
@@ -243,7 +274,8 @@ public class Main {
                     }
                 }
             }
-
+            
+            //Numero inserido com sucesso
             grade[lin][col] = numJogado.charAt(0);
 
         } catch (Exception e) {
@@ -253,8 +285,10 @@ public class Main {
         return 1;
     }
 
+    //Funcao que ira verificar a vitoria do jogador
     public static boolean status(char grade[][]) {
 
+        //Verifica se o tabuleiro esta sem nenhum '_'
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (grade[i][j] == '_')
