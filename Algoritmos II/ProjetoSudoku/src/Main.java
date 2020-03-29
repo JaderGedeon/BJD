@@ -13,8 +13,9 @@ não realizarei quaisquer outras atividades desonestas para me beneficiar ou pre
 outros.
 */
 
-import java.util.Scanner;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
@@ -32,14 +33,19 @@ public class Main {
         char[][] tabuleiro = new char[9][9];
 
         for (int i = 0; i < tab_primordial.length; i++)
-            for (int j = 0; j < tab_primordial[i].length; j++)
-                tabuleiro[i][j] = tab_primordial[i][j];
+            System.arraycopy(tab_primordial[i], 0, tabuleiro[i], 0, tab_primordial[i].length);
 
         boolean operante = false;
+        
+        //Manual
+        
+        
+        
+        
 
         // game loop
         while (!operante) {
-
+            
             print(tabuleiro, tab_primordial);
 
             switch (step(tabuleiro, tab_primordial)) {
@@ -50,20 +56,69 @@ public class Main {
                     System.out.println("\n\n\n==[O número digitado já existe na Linha/Coluna/Quadrante, Tente novamente]==\n");
                     break;
                 case 1:
-                    System.out.println("\n\n\n==============================[Próxima Jogada]==============================\n");
+                    operante = status(tabuleiro);
+                    if (!operante)
+                        System.out.println("\n\n\n==============================[Próxima Jogada]==============================\n");
                     break;
             }
 
-            operante = status(tabuleiro);
         }
+        System.out.println("\n\n\n================================[Parabéns!!]================================\n");
+        print(tabuleiro, tab_primordial);
+        System.out.println("\n======================[Deseja jogar novamente? (S/N) ]======================\n");
+        
+        String resp = leitor.next();
+        
+        if ("S".equals(resp) || "s".equals(resp))
+            game();
 
     }
 
     public static char[][] initialize() throws FileNotFoundException, IOException {
 
+        Scanner leitor = new Scanner(System.in);
+        
         char grade[][] = new char[9][9];
+        
+        int tabEscolhido = 0;
+        
+        File diretorio = new File("boards");
+        ArrayList<String> tabuleiros = new ArrayList();
+        
+        for (File arquivos : diretorio.listFiles()) {
+            if(arquivos.getName().endsWith(".txt"))
+                tabuleiros.add(arquivos.getName());
+        }
+        
+        boolean valorCorreto = false;
+        
+        while(!valorCorreto){
+            tabEscolhido = 0;
+            try{
 
-        FileReader leitorChar = new FileReader("boards/easy_1.txt"); // Lê caracter por caracter em ascii de uma linha
+                System.out.println("\n================================[Tabuleiros]================================\n");
+
+                for (int i = 0; i < tabuleiros.size(); i++) {
+                    System.out.println("("+(i+1)+") > "+tabuleiros.get(i).substring(0,tabuleiros.get(i).length()-4));
+                }
+
+                System.out.println("\nDigite o número do tabuleiro que deseje jogar: ");
+                tabEscolhido = leitor.nextInt();
+                
+                if(tabEscolhido > 0 && tabEscolhido <= tabuleiros.size())
+                    valorCorreto = true;
+
+            } catch(Exception e) {
+
+            }
+            if(!valorCorreto){
+                System.out.println("\n\n\n===============[Valores inseridos inválidos, Tente novamente]===============\n");
+                tabEscolhido = 0;
+            }
+            
+        }
+
+        FileReader leitorChar = new FileReader("boards/"+tabuleiros.get(tabEscolhido-1)); // Lê caracter por caracter em ascii de uma linha
         BufferedReader bufferLinha = new BufferedReader(leitorChar); //Bufferiza os caracteres de uma linha, normal, não ascii
 
         for (int i = 0; i < 9; i++) {
@@ -139,7 +194,7 @@ public class Main {
 
             }
 
-            if (i < 3 || i > 5) {
+            if (i < 3 || i > 5) {   
                 linha += "" + Verde + " ║\n" + Reset;
             } else {
                 linha += "" + Ciano + " ║\n" + Reset;
@@ -164,9 +219,12 @@ public class Main {
             System.out.println("\nDigite o número que deseja colocar: ");
             String numJogado = leitor.next();
 
-            if (numJogado.charAt(0) != '_' && (Integer.parseInt(numJogado) > 9 || Integer.parseInt(numJogado) < 1) || primordial[lin][col] != '_') {
+            if ((numJogado.charAt(0) != '_' && (Integer.parseInt(numJogado) > 9 || Integer.parseInt(numJogado) < 1)) || primordial[lin][col] != '_')
                 return -1;
-            }
+            
+            
+            if(numJogado.charAt(0) != '_' && grade[lin][col] != '_')
+                return -1;
 
 
 
@@ -189,7 +247,6 @@ public class Main {
             grade[lin][col] = numJogado.charAt(0);
 
         } catch (Exception e) {
-            System.out.println(e);
             return -1;
         }
 
