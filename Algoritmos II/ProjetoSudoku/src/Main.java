@@ -20,8 +20,8 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        
-        
+
+
 
         game(0);
 
@@ -31,22 +31,22 @@ public class Main {
     public static void game(int reiniciado) throws IOException {
 
         Scanner leitor = new Scanner(System.in);
-        
+
         //Exibir o manual apenas 1 vez no inicio
-        if(reiniciado == 0)
-        //Manual
-            System.out.println("==================================[Sudoku]==================================\n"
-                             + "\n"
-                             + "O objetivo do jogo é a colocação de números de 1 a 9 em cada uma das células vazias\n"
-                             + "numa grade de 9x9, constituída por 3x3 subgrades chamadas regiões.\n"
-                             + "\n"
-                             + "O tabuleiro contém algumas pistas iniciais, que são números inseridos em algumas células,\n"
-                             + "de maneira a permitir uma indução ou dedução dos números em células que estejam vazias.\n"
-                             + "\n"
-                             + "Cada coluna, linha e região só pode ter um número de cada um dos 1 a 9.\n"
-                             + "\n"
-                             + "Para importar novos tabuleiros, entre na pasta 'boards/' e clone o Modelo.txt\n"
-                             + "como base, substituindo os '_' por dígitos no novo arquivo, e também renomeando-o.");
+        if (reiniciado == 0)
+            //Manual
+            System.out.println("==================================[Sudoku]==================================\n" +
+                "\n" +
+                "O objetivo do jogo é a colocação de números de 1 a 9 em cada uma das células vazias\n" +
+                "numa grade de 9x9, constituída por 3x3 subgrades chamadas regiões.\n" +
+                "\n" +
+                "O tabuleiro contém algumas pistas iniciais, que são números inseridos em algumas células,\n" +
+                "de maneira a permitir uma indução ou dedução dos números em células que estejam vazias.\n" +
+                "\n" +
+                "Cada coluna, linha e região só pode ter um número de cada um dos 1 a 9.\n" +
+                "\n" +
+                "Para importar novos tabuleiros, entre na pasta 'boards/' e clone o Modelo.txt\n" +
+                "como base, substituindo os '_' por dígitos no novo arquivo, e também renomeando-o.");
 
         //Definição do tabuleiro e cópia dele, sendo o primordial a matriz-origem.
         char tab_primordial[][] = initialize();
@@ -57,7 +57,7 @@ public class Main {
 
         boolean operante = false;
 
-        
+
         // game loop
         while (!operante) {
 
@@ -75,12 +75,12 @@ public class Main {
                     operante = status(tabuleiro);
                     if (!operante)
                         System.out.println("\n\n\n==============================[Próxima Jogada]==============================\n");
-                        
+
                     break;
             }
 
         }
-        
+
         //Fim de jogo
         System.out.println("\n\n\n================================[Parabéns!!]================================\n");
         print(tabuleiro, tab_primordial);
@@ -100,7 +100,7 @@ public class Main {
         char grade[][] = new char[9][9];
 
         int tabEscolhido = 0;
-        
+
         //Coloca dentro de uma lista todos os arquivos.txt dentro da paste boards/.
 
         File diretorio = new File("boards");
@@ -113,7 +113,7 @@ public class Main {
 
         boolean valorCorreto = false;
 
-        
+
         //Testa pra ver se o jogador inseriu o numero de um tabuleiro valido.
         while (!valorCorreto) {
             try {
@@ -140,13 +140,13 @@ public class Main {
         }
 
         System.out.println("\n\n");
-        
+
         //Faz a leitura do arquivo
         FileReader leitorChar = new FileReader("boards/" + tabuleiros.get(tabEscolhido - 1));
         BufferedReader bufferLinha = new BufferedReader(leitorChar);
 
         for (int i = 0; i < 9; i++) {
-            String linhaGrade[] = (bufferLinha.readLine()).split(" "); 
+            String linhaGrade[] = (bufferLinha.readLine()).split(" ");
             for (int j = 0; j < 9; j++) {
                 grade[i][j] = linhaGrade[j].charAt(0);
             }
@@ -237,7 +237,7 @@ public class Main {
     public static int step(char grade[][], char primordial[][]) {
 
         Scanner leitor = new Scanner(System.in);
-        
+
         //Testa para ver se o jogador numeros validos
         try {
 
@@ -248,7 +248,7 @@ public class Main {
             System.out.println("\nDigite o número que deseja colocar: ");
             String numJogado = leitor.next();
 
-            
+
             //Teste de numeros validos
             if ((numJogado.charAt(0) != '_' && (Integer.parseInt(numJogado) > 9 || Integer.parseInt(numJogado) < 1)) || primordial[lin][col] != '_')
                 return -1;
@@ -274,7 +274,7 @@ public class Main {
                     }
                 }
             }
-            
+
             //Numero inserido com sucesso
             grade[lin][col] = numJogado.charAt(0);
 
